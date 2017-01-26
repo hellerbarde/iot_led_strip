@@ -6,7 +6,7 @@
 #include <Adafruit_NeoPixel.h>
 
 #define PIN 0
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(3, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(9, PIN, NEO_GRB + NEO_KHZ800);
 
 const char *ssid = "33C3-open-legacy";
 const char *password = "";
@@ -164,16 +164,18 @@ void setup ( void ) {
   strip.show();
   
 	pinMode ( led, OUTPUT );
-	digitalWrite ( led, 0 );
+	digitalWrite ( led, 1 );
 	
 //  WiFi.begin ( ssid, password );
   WiFi.begin ( ssid );
 	Serial.println ( "" );
+  rainbow(5);
 
 	// Wait for connection
 	while ( WiFi.status() != WL_CONNECTED ) {
-		delay ( 500 );
+		//delay ( 500 );
 		Serial.print ( "." );
+   rainbow(40);
 	}
 
 	Serial.println ( "" );
@@ -219,12 +221,14 @@ uint32_t Wheel(byte WheelPos) {
 void rainbow(uint8_t wait) {
   uint16_t i, j;
 
-  for(j=0; j<256; j++) {
-    for(i=0; i<strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel((i+j) & 255));
+  for(j=0; j<256*8; j+=strip.numPixels()*3) {
+    for(i=0; i < strip.numPixels(); i+=1) {
+        strip.setPixelColor(i, Wheel((i+j) & 255));
+        strip.show();
+        delay(wait);
     }
-    strip.show();
-    delay(wait);
+    
+    //delay(wait);
   }
 }
 
